@@ -151,6 +151,17 @@
 #define TEMP_uV_LOOKUP_TS80
 #endif
 
+#ifdef MODEL_OtterIron_Pro
+#define VOLTAGE_DIV     560    // 
+#define PID_POWER_LIMIT 70     // TODO???
+#define CALIBRATION_OFFSET 900 // TODO????
+#define POWER_LIMIT 30         // TODO???
+#define MAX_POWER_LIMIT 65     // TODO???
+#define POWER_LIMIT_STEPS 5
+#define OP_AMP_GAIN_STAGE OP_AMP_GAIN_STAGE_TS100
+#define TEMP_uV_LOOKUP_HAKKO
+#endif
+
 #ifdef MODEL_TS100
 const int32_t tipMass = 65;       // X10 watts to raise 1 deg C in 1 second
 const uint8_t tipResistance = 75; //x10 ohms, 7.5 typical for ts100 tips
@@ -169,4 +180,9 @@ const uint8_t tipResistance = 45; //x10 ohms, 4.5 typical for ts80 tips
 #ifdef MODEL_TS80P
 const uint32_t tipMass = 40;
 const uint8_t tipResistance = 45; //x10 ohms, 4.5 typical for ts80 tips
+#endif
+
+#ifdef MODEL_OtterIron_Pro
+const uint32_t tipMass = 30;
+const uint8_t tipResistance = 24; //x10 ohms, 2.4 typical for jbc tips
 #endif

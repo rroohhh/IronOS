@@ -32,6 +32,12 @@ SOURCE_DRIVERS_DIR = ./Core/Drivers
 INC_PD_DRIVERS_DIR = ./Core/Drivers/FUSB302
 SOURCE_MIDDLEWARES_DIR = ./Middlewares
 
+OTTERIRON_INC_DIR = ./Core/BSP/OtterIron
+OTTERIRON_INC_CMSIS_DEVICE = ./Core/BSP/OtterIron/Vendor/CMSIS/Device/ST/STM32F0xx/Include
+OTTERIRON_CMSIS_CORE_INC_DIR = ./Core/BSP/OtterIron/Vendor/CMSIS/Include
+OTTERIRON_HAL_INC_DIR = ./Core/BSP/OtterIron/Vendor/STM32F0xx_HAL_Driver/Inc
+OTTERIRON_HAL_LEGACY_INC_DIR = ./Core/BSP/OtterIron/Vendor/STM32F0xx_HAL_Driver/Inc/Legacy
+
 # Device dependent settings
 ifeq ($(model),$(filter $(model),TS100 TS80 TS80P))
 $(info Building for Miniware )
@@ -56,6 +62,31 @@ DEV_CXXFLAGS= -D GCC_ARMCM3		\
 		-D STM32F10X_MD		
 CPUFLAGS= -mcpu=cortex-m3     \
 		  -mthumb 			\
+		  -mfloat-abi=soft
+flash_size=64k
+bootldr_size=0x4000
+endif
+
+ifeq ($(model),$(filter $(model),OtterIron_Pro OtterIron))
+$(info Building for OtterIron )
+DEVICE_INCLUDES = -I$(OTTERIRON_INC_DIR) \
+	-I$(OTTERIRON_INC_CMSIS_DEVICE)\
+	-I$(OTTERIRON_CMSIS_CORE_INC_DIR)	\
+	-I$(OTTERIRON_HAL_INC_DIR)	\
+	-I$(OTTERIRON_HAL_LEGACY_INC_DIR)
+DEVICE_BSP_DIR = ./Core/BSP/OtterIron
+S_SRCS=./Core/BSP/OtterIron/startup_stm32f072xb.S
+LDSCRIPT=./Core/BSP/OtterIron/stm32f072.ld
+DEV_GLOBAL_DEFS= -D STM32F0 -D STM32 -D USE_HAL_DRIVER -D STM32F072xB -D USE_RTOS_SYSTICK -D GCC_ARMCM0		\
+		-D ARM_MATH_CM0 	
+DEV_LDFLAGS=-lm -Wl,--gc-sections 
+DEV_AFLAGS=
+DEV_CFLAGS= -D GCC_ARMCM0		\
+		-D ARM_MATH_CM0 	
+DEV_CXXFLAGS= -D GCC_ARMCM0		\
+		-D ARM_MATH_CM0 	
+CPUFLAGS= -mcpu=cortex-m0     \
+ 		  -mthumb 			\
 		  -mfloat-abi=soft
 flash_size=64k
 bootldr_size=0x4000
@@ -141,7 +172,7 @@ COMPILER=gcc
 # arm-none-eabi is the general ARM compiler, 
 # riscv-none-embed is the riscv compiler
 # riscv-nuclei-elf is the nuclei tuned one for their cores
-ifeq ($(model),$(filter $(model),TS100 TS80 TS80P))
+ifeq ($(model),$(filter $(model),TS100 TS80 TS80P OtterIron OtterIron_Pro))
 COMPILER_PREFIX=arm-none-eabi
 endif
 ifeq ($(model),Pinecil)
@@ -204,8 +235,8 @@ CHECKOPTIONS=		-Wall 				\
 			-Winline			\
 			-Wshadow			\
 			-Wno-unused-parameter \
-			-Wdouble-promotion \
-			-Werror 
+			-Wdouble-promotion 
+#			-Werror 
 			
 
 
@@ -289,7 +320,7 @@ all: $(OUT_HEXFILE).hex $(OUT_HEXFILE).bin
 $(OUT_HEXFILE).elf : $(OUT_OBJS_S) $(OUT_OBJS) $(OUT_OBJS_CPP) Makefile $(LDSCRIPT)
 	@test -d $(@D) || mkdir -p $(@D)
 	@echo Linking $(OUTPUT_EXE).elf
-	@$(CPP) $(CXXFLAGS) $(OUT_OBJS_S) $(OUT_OBJS) $(OUT_OBJS_CPP) $(LIBS) $(LINKER_FLAGS)
+	$(CPP) $(CXXFLAGS) $(OUT_OBJS_S) $(OUT_OBJS) $(OUT_OBJS_CPP) $(LIBS) $(LINKER_FLAGS)
 
 $(OUT_OBJS): $(OUTPUT_DIR)/%.o : %.c Makefile $(APP_INC_DIR)/unit.h
 	@test -d $(@D) || mkdir -p $(@D)
