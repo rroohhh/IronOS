@@ -110,6 +110,25 @@ void unstick_I2C() {
 	HAL_I2C_Init(&hi2c1);
 }
 
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim->Instance == TIM7) {
+    HAL_IncTick();
+  }
+}
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
+void Error_Handler(void)
+{
+  __disable_irq();
+  while (1)
+  {
+  }
+}
+
 
 // If the user has programmed in a bootup logo, draw it to the screen from flash
 // Returns 1 if the logo was printed so that the unit waits for the timeout or button

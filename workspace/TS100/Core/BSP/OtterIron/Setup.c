@@ -108,7 +108,9 @@ void Setup_HAL() {
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);
 
-  HAL_ADC_Start_DMA(&hadc, (uint32_t *)ADC_raw, 4);
+  // HAL_ADC_Start_DMA(&hadc, (uint32_t *)ADC_raw, 4);
+
+  // vPortSetupTimerInterrupt();
 }
 
 void SystemClock_Config(void)
@@ -143,18 +145,6 @@ void SystemClock_Config(void)
   PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_HSI48;
 
   HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit);
-
-
-	/**Configure the Systick interrupt time
-	 */
-	HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
-
-	/**Configure the Systick
-	 */
-	HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
-
-	/* SysTick_IRQn interrupt configuration */
-	HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
 }
 
 void MX_ADC_Init(void)
@@ -354,10 +344,5 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(INT_N_GPIO_Port, &GPIO_InitStruct);
-
-}
-
-void Error_Handler(void)
-{
 
 }

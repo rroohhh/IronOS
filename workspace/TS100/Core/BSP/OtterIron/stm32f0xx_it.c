@@ -25,12 +25,7 @@ extern DMA_HandleTypeDef hdma_adc;
 
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim3;
-
-void SysTick_Handler(void)
-{
-  HAL_IncTick();
-  osSystickHandler();
-}
+extern TIM_HandleTypeDef htim7;
 
 void ADC1_COMP_IRQHandler(void)
 {
@@ -40,11 +35,6 @@ void ADC1_COMP_IRQHandler(void)
 void DMA1_Channel1_IRQHandler(void)
 {
   HAL_DMA_IRQHandler(&hdma_adc);
-}
-
-//Timer 1 has overflowed, used for HAL ticks
-void TIM1_UP_IRQHandler(void) {
-	HAL_TIM_IRQHandler(&htim1);
 }
 
 void TIM1_BRK_UP_TRG_COM_IRQHandler(void)
@@ -57,7 +47,6 @@ void TIM1_CC_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim1);
 }
 
-void TIM3_IRQHandler(void)
-{
-  HAL_TIM_IRQHandler(&htim3);
+void TIM7_IRQHandler(void) {
+  HAL_TIM_IRQHandler(&htim7);
 }
